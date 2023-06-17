@@ -39,8 +39,22 @@ float r_angles[4] = {45.0f, 45.0f, 45.0f, 45.0f};
 // Store distances for each angle
 // for scaler calculation.
 
-float l_angle_distances[8] = {0};
-float r_angle_distances[8] = {0};
+float l_angle_distances[8] = {572.0219f,
+553.6759f,
+603.0829f,
+685.2306f,
+704.0859f,
+808.2234f,
+677.0894f,
+678.8225f}; //testing
+float r_angle_distances[8] = {637.0385f,
+620.8978f,
+598.0836f,
+620.1814f,
+608.0822f,
+666.1486f,
+580.0862f,
+683.8340f};
 
 int distance_angles[8] = {0, 45, 90, 135, 180, 225, 270, 315};
 int diagonal_angles[4] = {0, 90, 180, 270};
@@ -356,6 +370,23 @@ void stick_scaling_init()
 
 void stick_scaling_finalize()
 {
+
+  if(true)
+  // Debug print calibration info
+  {
+    printf("L Angle Distances: \n");
+    for (uint8_t i = 0; i < 8; i++)
+    {
+      printf("%.4f, \n", l_angle_distances[i]);
+    }
+
+    printf("R Angle Distances: \n");
+    for (uint8_t i = 0; i < 8; i++)
+    {
+      printf("%.4f, \n", r_angle_distances[i]);
+    }
+  }
+
   calculate_distance_scalers(l_angle_distances, l_distance_scalers);
   calculate_distance_scalers(r_angle_distances, r_distance_scalers);
 }

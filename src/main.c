@@ -14,7 +14,7 @@ progcc_button_data_s button_data = {0};
 a_data_s analog_data = {0};
 a_data_s scaled_analog_data = {0};
 
-bool calibrate = true;
+bool calibrate = false;
 bool centered = false;
 
 void write_color(uint32_t col)
@@ -43,6 +43,7 @@ void main_two()
 
             stick_scaling_capture_distances(&analog_data);
 
+            /*
             if (!gpio_get(PGPIO_BUTTON_MODE))
             {
                 stick_scaling_finalize();
@@ -50,19 +51,11 @@ void main_two()
                 progcc_utils_set_rumble(PROGCC_RUMBLE_ON);
                 sleep_ms(200);
                 progcc_utils_set_rumble(PROGCC_RUMBLE_OFF);
-            }
+            }*/
         }
         else
         {
             stick_scaling_process_data(&analog_data, &scaled_analog_data);
-            static float la;
-            static float ra;
-
-            stick_scaling_get_last_angles(&la, &ra);
-
-            la *= 46603.0f;
-            uint32_t c = (uint32_t) la;
-            write_color(c);
         }
     }
 }
@@ -93,7 +86,33 @@ int main() {
         reset_usb_boot(0, 0);
     }
 
-    progcc_usb_set_mode(PUSB_MODE_SW, true);
+    // Flash LEDS and do rumble
+    progcc_utils_set_rumble(PROGCC_RUMBLE_ON);
+    sleep_ms(200);
+    progcc_utils_set_rumble(PROGCC_RUMBLE_OFF);
+    sleep_ms(200);
+    progcc_utils_set_rumble(PROGCC_RUMBLE_ON);
+    sleep_ms(200);
+    progcc_utils_set_rumble(PROGCC_RUMBLE_OFF);
+    sleep_ms(200);
+    write_color(0xFF0000);
+    sleep_ms(500);
+    write_color(0xFF00);
+    sleep_ms(500);
+    write_color(0xFF);
+    sleep_ms(500);
+    write_color(0x00);
+    sleep_ms(500);
+
+    write_color(0xFFFFFF);
+    sleep_ms(100);
+    write_color(0x00);
+    sleep_ms(100);
+    write_color(0xFFFFFF);
+    sleep_ms(100);
+    write_color(0x00);
+
+    progcc_usb_set_mode(PUSB_MODE_XI, true);
 
     if (!progcc_usb_start())
     {
@@ -102,6 +121,11 @@ int main() {
     }
 
     sleep_ms(200);
+
+    // Stick init
+    progcc_utils_read_sticks(&analog_data);
+    stick_scaling_capture_center(&analog_data);
+    stick_scaling_finalize();
 
     multicore_launch_core1(main_two);
 
