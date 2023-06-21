@@ -72,7 +72,7 @@ int main() {
     PIO pio = pio0;
     int sm = 0;
     uint offset = pio_add_program(pio, &ws2812_program);
-    ws2812_program_init(pio, sm, offset, WS2812_PIN, 1100000, IS_RGBW);
+    ws2812_program_init(pio, sm, offset, WS2812_PIN, 12800000, IS_RGBW);
 
     stick_scaling_init();
 
